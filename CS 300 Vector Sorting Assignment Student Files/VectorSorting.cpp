@@ -1,6 +1,6 @@
 //============================================================================
 // Name        : VectorSorting.cpp
-// Author      : Your name
+// Author      : William Paddock
 // Version     : 1.0
 // Copyright   : Copyright © 2023 SNHU COCE
 // Description : Vector Sorting Algorithms
@@ -176,18 +176,18 @@ void quickSort(vector<Bid>& bids, int begin, int end) {
  */
 void selectionSort(vector<Bid>& bids) {
     //define min as int (index of the current minimum bid)
-
-    // check size of bids vector
-    // set size_t platform-neutral result equal to bid.size()
-
-    // pos is the position within bids that divides sorted/unsorted
-    // for size_t pos = 0 and less than size -1 
-        // set min = pos
-        // loop over remaining elements to the right of position
-            // if this element's title is less than minimum title
-                // this element becomes the minimum
-        // swap the current minimum with smaller one found
-            // swap is a built in vector method
+    int i, j, min_idx;
+    for (i = 0; i < bids.size(); i++){
+        // Get the current i to check the bids
+        min_idx = i;
+        for (j = 0; j < bids.size(); j++) {
+            if(bids[j].title <= bids[min_idx].title){
+                min_idx = j;
+            }
+        }
+        // Swap the two vector spots to resort them
+        iter_swap(bids.begin() + i, bids.begin() + min_idx);
+    }
 }
 
 /**
@@ -262,7 +262,13 @@ int main(int argc, char* argv[]) {
 
             break;
 
-        // FIXME (1b): Invoke the selection sort and report timing results
+        case 3:
+            // find the selection input and sort it
+            selectionSort(bids);
+            for (int i = 0; i < bids.size(); i++){
+                cout << bids[i].title << endl;
+            }
+            cout << endl;
 
         // FIXME (2b): Invoke the quick sort and report timing results
 
