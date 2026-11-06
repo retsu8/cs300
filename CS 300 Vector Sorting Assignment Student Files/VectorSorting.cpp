@@ -122,21 +122,20 @@ vector<Bid> loadBids(string csvPath) {
  */
 int partition(vector<Bid>& bids, int begin, int end) {
     //set low and high equal to begin and end
+    std:string pivot = bids[end].title;
+    int boundary = begin;
 
-    // Calculate the middle element as middlePoint (int)
-    // Set Pivot as middlePoint element title to compare (string)  
-  
-    // while not done 
+    // swap the positions of the bids
+    for (int i = begin; i < end; i++){
+        if (bids[i].title <= pivot) {
+            iter_swap(bids.begin() + i, bids.begin() + boundary);
+            ++boundary;
+        }
+    }
+    
+    iter_swap(bids.begin() + boundary, bids.begin() + end);
 
-        // keep incrementing low index while bids[low].title < Pivot
-       
-        // keep decrementing high index while Pivot < bids[high].title
-
-        /* If there are zero or one elements remaining,
-            all bids are partitioned. Return high */
-       // else swap the low and high bids (built in vector method)
-            // move low and high closer ++low, --high
-    //return high;
+    return boundary;
 }
 
 /**
