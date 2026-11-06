@@ -124,16 +124,15 @@ int partition(vector<Bid>& bids, int begin, int end) {
     //set low and high equal to begin and end
     std:string pivot = bids[end].title;
     int boundary = begin;
-
     // swap the positions of the bids
-    for (int i = begin; i < end; i++){
-        if (bids[i].title <= pivot) {
-            iter_swap(bids.begin() + i, bids.begin() + boundary);
+    for (int j = begin; j < end; j++){
+        if (bids[j].title <= pivot) {
+            swap(bids[j], bids[boundary]);
             ++boundary;
         }
     }
     
-    iter_swap(bids.begin() + boundary, bids.begin() + end);
+    swap(bids[boundary], bids[end]);
 
     return boundary;
 }
@@ -149,17 +148,23 @@ int partition(vector<Bid>& bids, int begin, int end) {
  */
 void quickSort(vector<Bid>& bids, int begin, int end) {
     //set mid equal to 0
+    if(begin < end) {
+        // Sort the partition
+        int pi = partition(bids, begin, end);
 
+        // recursively sort low partition (begin to mid)
+        quickSort(bids, begin, pi - 1);
+
+        // recursively sort high partition (mid+1 to end)
+        quickSort(bids, pi + 1, end);
+    }
     /* Base case: If there are 1 or zero bids to sort,
      partition is already sorted otherwise if begin is greater
      than or equal to end then return*/
 
     /* Partition bids into low and high such that
      midpoint is location of last element in low */
-     
-    // recursively sort low partition (begin to mid)
 
-    // recursively sort high partition (mid+1 to end)
 
 }
 
@@ -275,7 +280,20 @@ int main(int argc, char* argv[]) {
             ticks = clock() - ticks; // current clock ticks minus starting clock ticks
             cout << "time: " << ticks << " clock ticks" << endl;
             cout << "time: " << ticks * 1.0 / CLOCKS_PER_SEC << " seconds" << endl;
+            break;
 
+        case 4:
+            // Quicksort implmentation
+            ticks = clock();
+            int n = bids.size() - 1;
+            quickSort(bids, 0, n);
+
+            // Calculate elapsed time and display result
+            ticks = clock() - ticks; // current clock ticks minus starting clock ticks
+            cout << "time: " << ticks << " clock ticks" << endl;
+            cout << "time: " << ticks * 1.0 / CLOCKS_PER_SEC << " seconds" << endl;
+            break;
+            
 
         // FIXME (2b): Invoke the quick sort and report timing results
 
