@@ -176,16 +176,19 @@ void quickSort(vector<Bid>& bids, int begin, int end) {
 void selectionSort(vector<Bid>& bids) {
     //define min as int (index of the current minimum bid)
     int i, j, min_idx;
-    for (i = 0; i < bids.size(); i++){
+    int n = bids.size();
+    for (i = 0; i < n - 1; i++){
         // Get the current i to check the bids
         min_idx = i;
-        for (j = 0; j < bids.size(); j++) {
-            if(bids[j].title <= bids[min_idx].title){
+        // Look though the unsorted array for the smallest
+        for (j = i + 1; j < n; j++) {
+            if(bids[j].title < bids[min_idx].title){
+                //update min if smaller found
                 min_idx = j;
             }
         }
         // Swap the two vector spots to resort them
-        iter_swap(bids.begin() + i, bids.begin() + min_idx);
+        swap(bids[i], bids[min_idx]);
     }
 }
 
@@ -263,11 +266,16 @@ int main(int argc, char* argv[]) {
 
         case 3:
             // find the selection input and sort it
+            // this sorts desc putting the lowercase at the end
+            ticks = clock();
             selectionSort(bids);
-            for (int i = 0; i < bids.size(); i++){
-                cout << bids[i].title << endl;
-            }
-            cout << endl;
+            cout << bids.size() << " bids sorted" << endl;
+
+            // Calculate elapsed time and display result
+            ticks = clock() - ticks; // current clock ticks minus starting clock ticks
+            cout << "time: " << ticks << " clock ticks" << endl;
+            cout << "time: " << ticks * 1.0 / CLOCKS_PER_SEC << " seconds" << endl;
+
 
         // FIXME (2b): Invoke the quick sort and report timing results
 
