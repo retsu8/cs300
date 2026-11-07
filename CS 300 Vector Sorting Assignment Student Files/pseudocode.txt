@@ -4,6 +4,10 @@ STRUCTURE Bid
     fund
     amount
 
+FUNCTION displayBid(bid)
+    DISPLAY bid.bidId bid.title bid.amount bid.fund
+END FUNCTION
+
 FUNCTION partition(bids, begin, end)
     pivot ← title of bids[end]
     boundary ← begin
