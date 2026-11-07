@@ -1,0 +1,87 @@
+STRUCTURE Bid
+    bidId
+    title
+    fund
+    amount
+
+FUNCTION partition(bids, begin, end)
+    pivot ← title of bids[end]
+    boundary ← begin
+
+    FOR j FROM begin TO end - 1
+        IF bids[j].title ≤ pivot
+            SWAP bids[j] WITH bids[boundary]
+            boundary ← boundary + 1
+        END IF
+    END FOR
+
+    SWAP bids[boundary] WITH bids[end]
+    RETURN boundary
+END FUNCTION
+
+FUNCTION quickSort(bids, begin, end)
+    IF begin < end
+        pivotIndex ← partition(bids, begin, end)
+        quickSort(bids, begin, pivotIndex - 1)
+        quickSort(bids, pivotIndex + 1, end)
+    END IF
+END FUNCTION
+
+FUNCTION selectionSort(bids)
+    n ← number of bids
+
+    FOR i FROM 0 TO n - 2
+        minIndex ← i
+
+        FOR j FROM i + 1 TO n - 1
+            IF bids[j].title < bids[minIndex].title
+                minIndex ← j
+            END IF
+        END FOR
+
+        SWAP bids[i] WITH bids[minIndex]
+    END FOR
+END FUNCTION
+
+FUNCTION main
+    Set CSV path from command-line argument,
+    or use the default CSV file if none is provided
+    bids ← empty list
+    choice ← 0
+
+    WHILE choice is not 9
+        Display menu:
+            1. Load Bids
+            2. Display All Bids
+            3. Selection Sort All Bids
+            4. Quick Sort All Bids
+            9. Exit
+        Read choice
+
+        SWITCH choice
+            CASE 1:
+                Start timer
+                bids ← load bids from CSV file
+                Display number of bids loaded
+                Display elapsed time
+
+            CASE 2:
+                FOR each bid in bids
+                    Display bid information
+                END FOR
+
+            CASE 3:
+                Start timer
+                selectionSort(bids)
+                Display number of bids sorted
+                Display elapsed time
+
+            CASE 4:
+                Start timer
+                quickSort(bids, 0, number of bids - 1)
+                Display elapsed time
+        END SWITCH
+    END WHILE
+
+    Display goodbye message
+END FUNCTION
