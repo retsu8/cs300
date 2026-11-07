@@ -8,6 +8,30 @@ FUNCTION displayBid(bid)
     DISPLAY bid.bidId bid.title bid.amount bid.fund
 END FUNCTION
 
+CLASS getBid()
+    BID bid;
+    DISPLAY "Enter Id: "
+    Read Input
+
+    DISPLAY "Enter title: "
+    Read Input
+
+    DISPLAY "Enter fund: "
+    Read Input;
+    
+    DISPLAY "Enter Amount: "
+    Read Input
+
+    CREATE bid
+    RETURN bid
+END CLASS
+
+FUNCTION loadBids(csvPath)
+    DISPLAY "Loading CSV file " csvPath
+
+    CREATE CLASS vector<Bid> bids;
+    
+
 FUNCTION partition(bids, begin, end)
     pivot ← title of bids[end]
     boundary ← begin
