@@ -30,7 +30,20 @@ FUNCTION loadBids(csvPath)
     DISPLAY "Loading CSV file " csvPath
 
     CREATE CLASS vector<Bid> bids;
-    
+    file <- IMPORT CSV FILE
+    TRY
+        FOR row in FILE
+            CREATE NEW Bid bid
+            FROM FILE ROW
+                ADD Bid tile to bid
+                ADD Bid bidId to bid
+                ADD Bid fund to bid
+                ADD Bid amount to bid
+            PUSH bid into bids ARRAY
+    CATCH csv ERROR
+        DISPLAY err
+    RETURN bids
+END FUNCTION
 
 FUNCTION partition(bids, begin, end)
     pivot ← title of bids[end]
