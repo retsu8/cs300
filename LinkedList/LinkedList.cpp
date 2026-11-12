@@ -81,6 +81,8 @@ public:
 LinkedList::LinkedList() {
     // FIXME (1): Initialize housekeeping variables
     //set head and tail equal to nullptr
+    head = nullptr;
+    tail = nullptr;
 }
 
 /**
@@ -105,12 +107,18 @@ LinkedList::~LinkedList() {
 void LinkedList::Append(Bid bid) {
     // FIXME (2): Implement append logic
     //Create new node
-    //if there is nothing at the head...
-            // new node becomes the head and the tail
-    //else 
-        // make current tail node point to the new node
-        // and tail becomes the new node
-    //increase size count
+    Node* new_node = new Node(bid);
+
+    if(head == nullptr){
+        // Check if we have a head, if not assign both
+        head = new_node;
+        tail = new_node;
+    } else {
+        // else add the tail to the end node
+        tail -> next = new_node;
+        tail = new_node;
+    }
+    ++size;
 }
 
 /**
@@ -119,13 +127,17 @@ void LinkedList::Append(Bid bid) {
 void LinkedList::Prepend(Bid bid) {
     // FIXME (3): Implement prepend logic
     // Create new node
+    Node* new_node = new Node(bid);
+    Node* temp = head;
+    if(head == nullptr){
+        head = new_node;
+        tail = new_node;
+    } else {
+        head = new_node;
+        head -> next = temp;
+    }
 
-    // if there is already something at the head...
-        // new node points to current head as its next node
-
-    // head now becomes the new node
-    //increase size count
-
+    ++size;
 }
 
 /**
@@ -134,6 +146,14 @@ void LinkedList::Prepend(Bid bid) {
 void LinkedList::PrintList() {
     // FIXME (4): Implement print logic
     // start at the head
+    Node* node = head;
+    while(node != nullptr){
+        cout << node -> bid.bidId << " ";
+        cout << node -> bid.title << " ";
+        cout << node -> bid.amount << " ";
+        cout << node -> bid.fund << " " << endl;
+        node = node -> next;
+    }
 
     // while loop over each node looking for a match
         //output current bidID, title, amount and fund
