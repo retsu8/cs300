@@ -166,12 +166,20 @@ void LinkedList::PrintList() {
  * @param bidId The bid id to remove from the list
  */
 void LinkedList::Remove(string bidId) {
-    // FIXME (5): Implement remove logic
-    // special case if matching node is the head
-        // make head point to the next node in the list
-        //decrease size count
-        //return
-
+    Node* node = head;
+    Node* prev_node = head;
+    if (head -> bid.bidId == bidId){
+        delete head
+        head = node -> next;
+    }
+    while(node != nullptr){
+        node = node -> next;
+        if(node -> bid.bidId == bidId){
+            prev_node -> next = node -> next;
+            delete node;
+        }
+        prev_node = prev_node -> next;
+    }
     // start at the head
     // while loop over each node looking for a match
         // if the next node bidID is equal to the current bidID
