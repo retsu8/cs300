@@ -166,32 +166,18 @@ void LinkedList::PrintList() {
  * @param bidId The bid id to remove from the list
  */
 void LinkedList::Remove(string bidId) {
-    Node* node = head;
-    Node* prev_node = head;
-    if (head -> bid.bidId == bidId){
-        delete head
-        head = node -> next;
-    }
-    while(node != nullptr){
-        node = node -> next;
-        if(node -> bid.bidId == bidId){
-            prev_node -> next = node -> next;
-            delete node;
-        }
-        prev_node = prev_node -> next;
-    }
-    // start at the head
-    // while loop over each node looking for a match
-        // if the next node bidID is equal to the current bidID
-        	// hold onto the next node temporarily
-         // make current node point beyond the next node
-         // now free up memory held by temp
-         // decrease size count
-         //return
+    Node* current = head;
+    Node* temp;
 
-    // current node is equal to next node
-    
-
+    // loop over each node, detach from list then delete
+    while (current != nullptr) {
+        if(current ->bid.bidId == bidId)
+            temp = current; // hang on to current node
+            current = current->next; // make current the next node
+            delete temp; // delete the orphan node
+            --size;
+            return
+    }
 }
 
 /**
@@ -200,19 +186,14 @@ void LinkedList::Remove(string bidId) {
  * @param bidId The bid id to search for
  */
 Bid LinkedList::Search(string bidId) {
-    // FIXME (6): Implement search logic
+    Node* current = head;
+    Node* temp;
 
-    // special case if matching bid is the head
-
-    // start at the head of the list
-
-    // keep searching until end reached with while loop (current != nullptr)
-        // if the current node matches, return current bid
-        // else current node is equal to next node
-
-    //(the next two statements will only execute if search item is not found)
-        //create new empty bid
-        //return empty bid 
+    // loop over each node, detach from list then delete
+    while (current != nullptr) {
+        if(current ->bid.bidId == bidId)
+            return current;
+    }
 }
 
 /**
