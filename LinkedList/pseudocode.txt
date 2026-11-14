@@ -1,0 +1,150 @@
+CLASS LinkedList:    
+    head = null
+    tail = null
+    size = 0
+    bidMap = linkedList bids
+
+FUNCTION LinkedList -> Append(bid):
+    newNode = new Node(bid)
+
+    if head is null:
+        head = newNode
+        tail = newNode
+    else:
+        tail.next = newNode
+        tail = newNode
+    ++size
+
+FUNCTION LinkedList -> Prepend(bid):
+    newNode = new Node(bid)
+
+    if head is null:
+        head = newNode
+        tail = newNode
+    else:
+        newNode.next = head
+        head = newNode
+    ++size
+
+
+FUNCTION LinkedList -> Search(bidId):
+    current = head
+    While (current != null)
+        if current.bid.bidID contains bidId:
+            return bid
+
+FUNCTION LinkedList -> Size():
+    return size
+
+FUNCTION LinkedList -> Remove(bidId):
+    current = head
+    temp
+    While (current != null)
+        if current.bid.bidID contains bidId:
+            temp = current
+            current = current->next
+            delete temp
+            size = size - 1
+            return
+
+FUNCTION displayBid(bid):
+    PRINT bid.bidID: bid.title | bid.amount | bid.fund
+
+FUNCTION getBid():
+    bid
+    GET USER INPUT ID "Enter Id:"
+    PUT ID bid.bidId
+    GET USER INPUT title "Enter title: "
+    PUT title bid.title
+    GET USER INPUT fund "Enter fund: "
+    PUT fund bid.fund
+    GET USER INPUT amount "Enter amount: "
+    PUT amount STRING stramount
+    PUT bid.ammount from strToDouble(stramount, '$')
+
+FUNCTION loadBids(csvPath, list):
+    PRINT Loading CSV file from csvPath
+    INITIlIZE file FROM PARSE csvPath
+    TRY:
+        FOR row IN file:
+            CREATE Bid bid
+            bid.bidId = file[i][1];
+            bid.title = file[i][0];
+            bid.fund = file[i][8];
+            bid.amount = strToDouble(file[i][4], '$');
+            list APPEND(bid)
+    CATCH csv ERROR
+        PRINT ERROR if csv error
+
+FUNCTION strToDouble(str, ch):
+    REMOVE empty charters of ch
+
+FUNCTION main(args, argv[]):
+    STRING csvPath, bidKey
+    switch(argc):
+        CASE 2:
+            csvPath = argv[1]
+            bidKey = "98109"
+            break;
+        CASE 3:
+            csvPath = argv[1]
+            bidKey = argv[2]
+            break;
+        DEFAULT:
+            csvPath = "eBid_Monthly_Sales.csv"
+            bidKey = "98109"
+    START clock_t ticks
+    LinkedList bidList
+    Bid bid
+
+    choice = 0
+    while choice != 9:
+        PRINT "Menu:"
+        PRINT "  1. Enter a Bid"
+        PRINT "  2. Load Bids"
+        PRINT "  3. Display All Bids"
+        PRINT "  4. Find Bid"
+        PRINT "  5. Remove Bid"
+        PRINT "  9. Exit"
+        PRINT "Enter choice: "
+        GET user input put in choice
+        CASE 1:
+            CREATE bid from getBid()
+            APPEND bid to bidList
+            RUN FUNCTION displayBid(bid)
+
+            break
+
+        CASSE 2:
+            START clock ticks
+            RUN FUNCTION loadBids(csvPath, &bidList);
+            PRINT bidList.Size() " bids read"
+            CHECK clock MINUS ticks
+            PRINT "time: " ticks " milliseconds" // prints time between miliseconds
+            PRINT "time: "  ticks * 1.0 / CLOCKS_PER_SEC " seconds" // to print time in seconds
+            break
+
+        case 3:
+            RUN FUNCTION bidList.PrintList()
+            break
+
+        case 4:
+            START clock ticks
+            RUN FUNCTION bidList.Search(bidKey);
+            SET OUTPUT to bids
+
+            CHECK clock MINUS ticks
+
+            IF bids.bidID is empty:
+                RUN FUNCTION displayBid(bid);
+            ELSE
+                PRINT "Bid Id " bidKey " not found."
+
+            PRINT "time: " ticks " milliseconds" // prints time between miliseconds
+            PRINT "time: "  ticks * 1.0 / CLOCKS_PER_SEC " seconds" // to print time in seconds
+            break
+
+        case 5:
+            RUN FUNCTION bidList.Remove(bidKey)
+            break
+        }
