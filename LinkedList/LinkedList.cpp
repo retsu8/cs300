@@ -165,12 +165,15 @@ void LinkedList::Remove(string bidId) {
 
     // loop over each node, detach from list then delete
     while (current != nullptr) {
-        if(current -> bid.bidId == bidId)
+        // Search for the bid
+        if(current -> bid.bidId == bidId){
             temp = current; // hang on to current node
             current = current->next; // make current the next node
             delete temp; // delete the orphan node
             --size; 
             return;
+        }
+        current = current -> next;
     }
 }
 
@@ -181,14 +184,16 @@ void LinkedList::Remove(string bidId) {
  */
 Bid LinkedList::Search(string bidId) {
     Node* current = head;
-    cout << typeid(current->bid.bidId).name();
     // loop over each node, detach from list then delete
     while (current != nullptr) {
-
+        // Check if the right bidId
         if(current -> bid.bidId == bidId){
             // Found the right bid and return that information
+            cout << current -> bid.bidId;
             return current -> bid;
         }
+        // Go to the next node if this one is not it
+        current = current -> next;
     }
 }
 
