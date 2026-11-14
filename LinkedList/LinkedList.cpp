@@ -144,20 +144,14 @@ void LinkedList::Prepend(Bid bid) {
  * Simple output of all bids in the list
  */
 void LinkedList::PrintList() {
-    // FIXME (4): Implement print logic
-    // start at the head
+    // Print the linked list
     Node* node = head;
     while(node != nullptr){
-        cout << node -> bid.bidId << " ";
-        cout << node -> bid.title << " ";
-        cout << node -> bid.amount << " ";
+        cout << node -> bid.title << " | ";
+        cout << node -> bid.amount << " | ";
         cout << node -> bid.fund << " " << endl;
         node = node -> next;
     }
-
-    // while loop over each node looking for a match
-        //output current bidID, title, amount and fund
-        //set current equal to next
 }
 
 /**
@@ -171,12 +165,12 @@ void LinkedList::Remove(string bidId) {
 
     // loop over each node, detach from list then delete
     while (current != nullptr) {
-        if(current ->bid.bidId == bidId)
+        if(current -> bid.bidId == bidId)
             temp = current; // hang on to current node
             current = current->next; // make current the next node
             delete temp; // delete the orphan node
-            --size;
-            return
+            --size; 
+            return;
     }
 }
 
@@ -187,12 +181,14 @@ void LinkedList::Remove(string bidId) {
  */
 Bid LinkedList::Search(string bidId) {
     Node* current = head;
-    Node* temp;
-
+    cout << typeid(current->bid.bidId).name();
     // loop over each node, detach from list then delete
     while (current != nullptr) {
-        if(current ->bid.bidId == bidId)
-            return current;
+
+        if(current -> bid.bidId == bidId){
+            // Found the right bid and return that information
+            return current -> bid;
+        }
     }
 }
 
