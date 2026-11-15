@@ -41,6 +41,13 @@ FUNCTION checkClassCourse():
 			// This course does not exist, remove it from prereqs
 			course.pre.erase(course.pre.begin() + count)
 
+FUNCTION search(course):
+	INT count = 0
+	FOR (string class: classHash):
+		IF class == course:
+			RETURN classList.at(count)
+		++count
+	RETURN null
 
 
 
