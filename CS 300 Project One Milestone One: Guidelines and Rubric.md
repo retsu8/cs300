@@ -1,8 +1,6 @@
 William Paddock
 CS 300 Module: Project One Milestone One
 
-vector<ClassCourse> = classList;
-
 CLASS Course:
 	VAR id = null
 	VAR name = null
@@ -23,11 +21,29 @@ FUNCTION processCSV(csvList):
             FOR (int j = 2; file[i].size; j++):
             	PUSH REQUIRED COURSE INTO course.pre from file[i][j]
             APPEND course to classList
+            APPEND file[i][0] TO classHash
 
     CATCH (csv::Error &e):
     	// Check to make sure we have atleast 2 params, or the file[i][0] will fail
     	PRINT Error &e
 
 FUNCTION checkClassCourse():
-	
+	FOR (courses = classList.begin(); courses != classList.end(); ++courses):
+		SET STRING class_name = courses.id
+		SET int count = 0
+		SET BOOL found = TRUE
+		FOR (string class : course.pre):
+			FOR (string hash: classHash):
+				IF hash == class:
+					SET found = TRUE
 
+		IF (NOT found):
+			// This course does not exist, remove it from prereqs
+			course.pre.erase(course.pre.begin() + count)
+
+
+
+
+vector<Course> = classList;
+vector<Course>::iterator courses;
+vector<string> = classHash
