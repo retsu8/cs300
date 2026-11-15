@@ -28,18 +28,14 @@ FUNCTION processCSV(csvList):
     	PRINT Error &e
 
 FUNCTION checkClassCourse():
-	FOR (courses = classList.begin(); courses != classList.end(); ++courses):
-		SET STRING class_name = courses.id
-		SET int count = 0
-		SET BOOL found = TRUE
-		FOR (string class : course.pre):
-			FOR (string hash: classHash):
-				IF hash == class:
-					SET found = TRUE
-
-		IF (NOT found):
-			// This course does not exist, remove it from prereqs
-			course.pre.erase(course.pre.begin() + count)
+	FOR (int c = 0; c < classList.size(); c++)
+		COURSE course = classList[c]
+		POINTER prereq => couse.pre
+		BOOL found = FALSE
+		FOR (int i = 0; i < prereq.size(); i++):
+			INT itr = find(classHash.begin(), classHash.end(), prereq[i])
+			IF(ITR == NULL):
+				course.pre.erase(course.pre.begin() + itr)
 
 FUNCTION search(course):
 	INT count = 0
@@ -49,8 +45,31 @@ FUNCTION search(course):
 		++count
 	RETURN null
 
-
+FUNCTION printCourse(course):
+	PRINT course.id + "  "
+	PRINT course.name + "  "
+	FOR (int i; i < course.pre; i++):
+		PRINT course.pre[i]
 
 vector<Course> = classList;
 vector<Course>::iterator courses;
 vector<string> = classHash
+
+FUNCTION menu:
+	EXECUTE processCSV
+	while choice != 9:
+        PRINT "Menu:"
+        PRINT "  1. Find Course"
+        PRINT "  9. Exit"
+        PRINT "Enter choice: "
+        GET user input put in choice
+
+      	SWITCH choice:
+      		case 1:
+      			PRINT "What course will we search?"
+      			GET user input PUT into class
+	            CLASS class = EXECUTE FUNCTION search(class)
+	            EXECUTE FUNCTION printCourse(class)
+	            break
+	        default:
+	        	PRINT "Choice not reconized"
