@@ -18,6 +18,7 @@ FUNCTION processCSV(csvList):
             SET course.name = file[i][1];
 
             // Start at 2 since we already know the first two; put the rest in a list
+            // If there is no more than two, then we dont loop
             FOR (int j = 2; file[i].size; j++):
             	PUSH REQUIRED COURSE INTO course.pre from file[i][j]
             APPEND course to classList
