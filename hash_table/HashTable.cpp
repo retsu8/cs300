@@ -90,10 +90,9 @@ public:
 /**
  * Default constructor
  */
-HashTable::HashTable() {
-    // FIXME (1): Initialize the structures used to hold bids
-    this-> tableSize = 100;
-    // Initalize node structure by resizing tableSize
+HashTable::HashTable() 
+    // Set the default size to DEFAULT_SIZE
+    :HashTable(DEFAULT_SIZE){
 }
 
 /**
@@ -101,10 +100,10 @@ HashTable::HashTable() {
  * Use to improve efficiency of hashing algorithm
  * by reducing collisions without wasting memory.
  */
-HashTable::HashTable(unsigned int size) {
-    // invoke local tableSize to size with this->
-    // resize nodes size
-    this -> tableSize = size;
+HashTable::HashTable(unsigned int size)
+    // nodes and tableSize set via default constructure
+    : nodes(size == 0 ? DEFAULT_SIZE : size)
+    : tableSize(size == 0 ? DEFAULT_SIZE : size) {
 }
 
 
@@ -115,6 +114,23 @@ HashTable::~HashTable() {
     // FIXME (2): Implement logic to free storage when class is destroyed
     
     // erase nodes beginning
+    for(Node& bucket: nodes){
+        // Set next bucket for clearing
+        Node* current = bucket.next;
+
+        while(current != nullptr){
+            // Create the next node to store this node
+            Node* next = current->next;
+            // Delete current node
+            delete current;
+            current = next;
+        }
+
+        // Drop the bucket next pointer to clear the buckets list
+        bucket.next = nullptr;
+        // Set the key back to the unit max to mark as empty
+        bucket.key = UINT_MAX;
+    }
 }
 
 /**
@@ -129,6 +145,7 @@ HashTable::~HashTable() {
 unsigned int HashTable::hash(int key) {
     // FIXME (3): Implement logic to calculate a hash value
     // return key tableSize
+    return (key % tableSize);
 }
 
 /**
@@ -140,12 +157,23 @@ void HashTable::Insert(Bid bid) {
     // FIXME (4): Implement logic to insert a bid
     // create the key for the given bid
     // retrieve node using key
+    unsigned int idx = hash(stoi(bid.bidId));
+    Node& bucket = nodes[idx];
     // if no entry found for the key
         // assign this node to the key position
-    // else if node is not used
-         // assing old node key to UNIT_MAX, set to key, set old node to bid and old node next to null pointer
-    // else find the next open node
-            // add new newNode to end
+    if ( bucket.key == UINT_MAX){
+        bucket.bid = bid;
+        bucket.key = idx;
+        return;
+    }
+    // running for loop while
+    Node* current = &bucket;
+    while(current-> next != nullptr) {
+        current = current -> next;
+    }
+
+    // Add a new node to the current bucket
+    current -> next = new Node(bid, idx);
 }
 
 /**
@@ -153,13 +181,20 @@ void HashTable::Insert(Bid bid) {
  */
 void HashTable::PrintAll() {
     // FIXME (5): Implement logic to print all bids
-    // for node begin to end iterate
-    //   if key not equal to UINT_MAx
-            // output key, bidID, title, amount and fund
-            // node is equal to next iter
-            // while node not equal to nullptr
-               // output key, bidID, title, amount and fund
-               // node is equal to next node
+    for(Node& bucket: nodes){
+        Node* current = bucket.next;
+
+        int count = 0;
+        while(current != nullptr){
+            // Print the current bid
+            Bid* bid = current -> bid;
+            cout << "Key " << count << ": " << bid.bidId << " | ";
+            cout << bid.title << " | " << bid.amount << " | ";
+            cout << bid.fund << endl;
+            // Create the next node to store this node
+            Node* current = current->next;
+        }
+    }
 
 }
 
