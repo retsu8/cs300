@@ -205,20 +205,33 @@ void HashTable::PrintAll() {
 void HashTable::Remove(string bidId) {
     // Look the buckets and check all nodes
     unsigned int idx = hash(stoi(bidId));
-    Node& bucket = nodes[idx];        
-    Node* current = &bucket;
-    while(current != nullptr){
-        // find the bid in question
-        if (current -> bid.bidId == bidId){
-            // Delete the node at the target position
-            Node* temp = current->next;
-            current->next = temp->next;
-            delete temp;
+    Node& bucket = nodes[idx];
+    // Check to see if the bucket is empty        
+    if (bucket.key == UINT_MAX) {
+        return; // Bucket is empty
+    }
 
-            // Stop the loop and go back
+    // set the previus and current
+    Node* previous = nullptr;
+    Node* current = &bucket;
+
+    Node* temp = bucket.next;
+
+    if (temp != nullptr && temp->bid.bidId == bidId) {
+        bucket.next = temp->next;
+        delete temp;
+    }
+    while (current != nullptr) {
+        if (current->bid.bidId == bidId) {
+            if (previous != nullptr) {
+                previous->next = current->next;
+                delete current;
+            }
             break;
         }
-        current = current -> next;
+
+        previous = current;
+        current = current->next;
     }
 }
 
