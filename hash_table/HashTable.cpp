@@ -187,9 +187,8 @@ void HashTable::PrintAll() {
 
         while(current != nullptr){
             // Print the current bid
-            cout << "Key " << bucket.key << ": " << current -> bid.bidId << " | ";
-            cout << current -> bid.title << " | " << current -> bid.amount << " | ";
-            cout << current -> bid.fund << endl;
+            cout << current -> bid.bidId << ": " << current -> bid.title << " | " << current -> bid.amount << " | "
+            << current -> bid.fund << endl;
             // Create the next node to store this node
             current = current->next;
         }
