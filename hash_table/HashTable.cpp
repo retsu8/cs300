@@ -111,8 +111,6 @@ HashTable::HashTable(unsigned int size)
  * Destructor
  */
 HashTable::~HashTable() {
-    // FIXME (2): Implement logic to free storage when class is destroyed
-    
     // erase nodes beginning
     for(Node& bucket: nodes){
         // Set next bucket for clearing
@@ -142,9 +140,8 @@ HashTable::~HashTable() {
  * @param key The key to hash
  * @return The calculated hash
  */
-unsigned int HashTable::hash(int key) {
-    // FIXME (3): Implement logic to calculate a hash value
-    // return key tableSize
+unsigned int HashTable::hash(int key) {\
+    // return key / tableSize for hash
     return (key % tableSize);
 }
 
@@ -154,19 +151,19 @@ unsigned int HashTable::hash(int key) {
  * @param bid The bid to insert
  */
 void HashTable::Insert(Bid bid) {
-    // FIXME (4): Implement logic to insert a bid
     // create the key for the given bid
     // retrieve node using key
     unsigned int idx = hash(stoi(bid.bidId));
+    // Add or create a new node
     Node& bucket = nodes[idx];
     // if no entry found for the key
-        // assign this node to the key position
+    // assign this node to the key position
     if ( bucket.key == UINT_MAX){
         bucket.bid = bid;
         bucket.key = idx;
         return;
     }
-    // running for loop while
+    // running for loop while to append bid if found
     Node* current = &bucket;
     while(current-> next != nullptr) {
         current = current -> next;
@@ -214,21 +211,27 @@ void HashTable::Remove(string bidId) {
     Node* previous = nullptr;
     Node* current = &bucket;
 
+    // Set this to the next bucket temp to have a reference point for buckets
     Node* temp = bucket.next;
 
+    // Use our tempt bucket to check if the head is what we want
     if (temp != nullptr && temp->bid.bidId == bidId) {
+        // remove the bucket head
         bucket.next = temp->next;
         delete temp;
     }
     while (current != nullptr) {
         if (current->bid.bidId == bidId) {
+            // make sure previus already exists
             if (previous != nullptr) {
+                // Check and remove the found bid id
                 previous->next = current->next;
                 delete current;
             }
             break;
         }
 
+        // the previus to current and set current to next for next loop
         previous = current;
         current = current->next;
     }
