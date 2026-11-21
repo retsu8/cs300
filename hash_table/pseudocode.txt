@@ -1,0 +1,212 @@
+SET DEFAULT_SIZE = 179
+
+FUNCTION strToDouble(str, ch):
+    REMOVE empty charters of ch
+
+CLASS HashTable:    
+	Bid bid
+	INT key
+	SCRUCT Node:
+		Node* next:
+			KEY = UNIT_MAX
+			next = NULL
+		Node(aBid)
+			bid = aBid
+		Node(aBid, key): Node(aBid):
+			key = aKey
+	vector<Node> nodes
+	INT tableSize = DEFAULT_SIZE
+	INT hash(INT KEY)
+
+HashTable::HashTable()
+	HashTable(DEFAULT_SIZE):
+
+HashTable::HashTable(unsigned int size)
+    : nodes(size EQUAL 0 ? DEFAULT_SIZE : size),
+     tableSize(size EQUAL 0 ? DEFAULT_SIZE : size):
+
+INT HashTable::hash(key):
+	RETURN key % tableSize
+
+HashTable::~HashTable():
+    // erase nodes beginning
+    FOR(Node& bucket: nodes):
+        // Set next bucket for clearing
+        Node* current = bucket.next
+
+        WHILE(current NOT EQUAL nullptr):
+            // Create the next node to store this node
+            Node* next = current->next
+            // Delete current node
+            DELETE current
+            current = next
+        
+        // Drop the bucket next pointer to clear the buckets list
+        bucket.next = nullptr
+        // Set the key back to the unit max to mark as empty
+        bucket.key = UINT_MAX
+
+HashTable::Insert(bid):
+    // create the key for the given bid
+    // retrieve node using key
+    SET INT idx TO hash(stoi(bid.bidId))
+    // Add or create a new node
+    SET Node& bucket TO nodes[idx];
+    // if no entry found for the key
+    // assign this node to the key position
+    IF ( CHECK bucket.key TO UINT_MAX){
+        SET bucket.bid TO bid
+        SET bucket.key TO idx
+        RETURN
+    }
+    // running for loop while to append bid if found
+    SET Node* current TO &bucket
+    WHILE(current-> next NOT EQUAL nullptr):
+        SET current TO current -> next
+
+    // Add a new node to the current bucket
+    SET current -> next TO Node(bid, idx)
+
+HashTable::PrintAll():
+    // This logic prints all the bids from there buckets
+    FOR(Node& bucket: nodes):
+        // We then get the buckets node in the list
+        SET Node* current TO bucket.next;
+
+        WHILE(current NOT EQUAL nullptr):
+            // Print the current bid
+            PRINT current -> bid.bidId + ": " + current -> bid.title + " | " + current -> bid.amount + " | " + current -> bid.fund NEWLINE;
+            // Create the next node to store this node
+            SET current TO current->next;
+
+FUNCTION loadBids(csvPath, list):
+    PRINT Loading CSV file from csvPath
+    INITIlIZE file FROM PARSE csvPath
+    TRY:
+        FOR row IN file:
+            CREATE Bid bid
+            SET bid.bidId TO file[i][1];
+            SET bid.title TO file[i][0];
+            SET bid.fund TO file[i][8];
+            SET bid.amount TO strToDouble(file[i][4], '$');
+            hashTable APPEND(bid)
+    CATCH csv ERROR
+        PRINT ERROR if csv error
+
+Bid HashTable::Search(string bidId):
+    // Search for the bidId
+    Bid bid
+    SET INT idx TO hash(stoi(bidId))
+    SET Node& bucket TO nodes[idx]       
+    SET Node* current TO &bucket
+    WHILE(current NOT EQUAL nullptr):
+        // find the bid in question
+        IF (current -> bid.bidId EQUAL bidId){
+            // Return the bid
+            SET bid TO current -> bid
+            BREAK
+        SET current TO current -> next
+    RETURN bid
+
+void HashTable::Remove(string bidId):		
+    // Look the buckets and check all nodes
+    SET INT idx TO hash(stoi(bidId));
+    SET Node& bucket TO nodes[idx];
+    // Check to see if the bucket is empty        
+    IF (bucket.key EQUAL UINT_MAX)
+        RETURN // Bucket is empty
+
+    // set the previus and current
+    SET Node* previous TO nullptr
+    SET Node* current TO &bucket
+
+    // Set this to the next bucket temp to have a reference point for buckets
+    SET Node* temp TO bucket.next
+
+    // Use our tempt bucket to check if the head is what we want
+    if (temp NOT EQUAL nullptr && temp->bid.bidId EQUAL bidId):
+        // remove the bucket head
+        SET bucket.next TO temp->next
+        DELETE temp
+
+    WHILE (current NOT EQUAL nullptr):
+        IF (current->bid.bidId EQUAL bidId):
+            // make sure previus already exists
+            IF (previous NOT EQUAL nullptr):
+                // Check and remove the found bid id
+                SET previous->next TO current->next
+                DELETE current
+            BREAK
+
+        // the previus to current and set current to next for next loop
+        SETprevious TO current;
+        SET current TO current->next
+
+FUNCTION displayBid(bid):
+    PRINT bid.bidID: bid.title | bid.amount | bid.fund
+
+FUNCTION main(args, argv[]):
+    STRING csvPath, bidKey
+    switch(argc):
+        CASE 2:
+            csvPath = argv[1]
+            bidKey = "98223"
+            break;
+        CASE 3:
+            csvPath = argv[1]
+            bidKey = argv[2]
+            break;
+        DEFAULT:
+            csvPath = "eBid_Monthly_Sales.csv"
+            bidKey = "98223"
+    START clock_t ticks
+    HashTable* bidTable
+    Bid bid
+
+    SET BidTable TO NEW HashTable()
+    choice = 0
+    while choice NOT EQUAL 9:
+        PRINT "Menu:"
+        PRINT "  1. Load Bids"
+        PRINT "  2. Display All Bids"
+        PRINT "  3. Find Bid"
+        PRINT "  4. Remove Bid"
+        PRINT "  9. Exit"
+        PRINT "Enter choice: "
+        GET user input put in choice
+
+        CASSE 1:
+            START clock ticks
+            RUN FUNCTION loadBids(csvPath, &bidTable);
+            CHECK clock MINUS ticks
+            PRINT "time: " ticks " milliseconds" // prints time between miliseconds
+            PRINT "time: "  ticks * 1.0 / CLOCKS_PER_SEC " seconds" // to print time in seconds
+            BREAK
+
+        case 2:
+            RUN FUNCTION bidTable.PrintList()
+            BREAK
+
+        case 3:
+            START clock ticks
+            RUN FUNCTION bidTable.Search(bidKey);
+            SET OUTPUT to bids
+
+            CHECK clock MINUS ticks
+
+            IF bids.bidID is empty:
+                RUN FUNCTION displayBid(bid);
+            ELSE
+                PRINT "Bid Id " bidKey " not found."
+
+            PRINT "time: " ticks " milliseconds" // prints time between miliseconds
+            PRINT "time: "  ticks * 1.0 / CLOCKS_PER_SEC " seconds" // to print time in seconds
+            break
+
+        case 4:
+            RUN FUNCTION bidTable.Remove(bidKey)
+            break
+    
+    PRINT "Good bye." NEWLINE
+
+    RETURN 0
