@@ -95,25 +95,39 @@ FUNCTION processCSV(csvList):
 	TRY:
 		FOR (int i = 0; i < file.rowCount(); i++):
 
-            // initialize a bid using data from current row (i)
+            // initialize a course using data from current row (i)
             CREATE Course course;
             SET course.id = file[i][0];
-            SET course.name = file[i][1];
+            SET course.title = file[i][1];
 
             // Start at 2 since we already know the first two; put the rest in a list
             // If there is no more than two, then we dont loop
             FOR (int j = 2; file[i].size; j++):
             	PUSH REQUIRED COURSE INTO course.pre from file[i][j]
-            APPEND course to courseList
-            APPEND file[i][0] TO courseHash
+            courseList APPEND(course)
 
     CATCH (csv::Error &e):
     	// Check to make sure we have atleast 2 params, or the file[i][0] will fail
     	PRINT Error &e
 
-void HashTable::Remove(string bidId):		
+FUNCTION checkCourse():
+    FOR(Node& bucket: nodes):
+        // Set next bucket for clearing
+        Node* current = bucket.next
+
+        WHILE(current NOT EQUAL nullptr):
+            DEEPCOPY prereqs FROM current -> course.prereq
+            FOR (prereq IN prereqs):
+                // Check if our course exists
+                Course prereq = courseList SEARCH(prereq)
+                // This does not exist
+                IF (prereq == NULL):
+                    current -> course.prereq.remove(prereq)
+            Node* next = current->next
+
+void HashTable::Remove(string courseId):		
     // Look the buckets and check all nodes
-    SET INT idx TO hash(stoi(bidId));
+    SET INT idx TO hash(stoi(courseId));
     SET Node& bucket TO nodes[idx];
     // Check to see if the bucket is empty        
     IF (bucket.key EQUAL UINT_MAX)
@@ -127,53 +141,43 @@ void HashTable::Remove(string bidId):
     SET Node* temp TO bucket.next
 
     // Use our tempt bucket to check if the head is what we want
-    if (temp NOT EQUAL nullptr && temp->bid.bidId EQUAL bidId):
+    if (temp NOT EQUAL nullptr && temp->course.id EQUAL courseId):
         // remove the bucket head
         SET bucket.next TO temp->next
         DELETE temp
 
     WHILE (current NOT EQUAL nullptr):
-        IF (current->bid.bidId EQUAL bidId):
+        IF (current->course.id EQUAL courseId):
             // make sure previus already exists
             IF (previous NOT EQUAL nullptr):
-                // Check and remove the found bid id
+                // Check and remove the found course id
                 SET previous->next TO current->next
                 DELETE current
             BREAK
 
         // the previus to current and set current to next for next loop
-        SETprevious TO current;
+        SET previous TO current;
         SET current TO current->next
 
-FUNCTION checkcourseCourse():
-	FOR (int c = 0; c < courseList.size(); c++)
-		COURSE course = courseList[c]
-		POINTER prereq => couse.pre
-		BOOL found = FALSE
-		FOR (int i = 0; i < prereq.size(); i++):
-			INT itr = find(courseHash.begin(), courseHash.end(), prereq[i])
-			IF(ITR == NULL):
-				course.pre.erase(course.pre.begin() + itr)
-
-Bid HashTable::Search(string bidId):
-    // Search for the bidId
-    Bid bid
-    SET INT idx TO hash(stoi(bidId))
+Course HashTable::Search(string courseId):
+    // Search for the course id
+    Course course
+    SET INT idx TO hash(stoi(courseId))
     SET Node& bucket TO nodes[idx]       
     SET Node* current TO &bucket
     WHILE(current NOT EQUAL nullptr):
-        // find the bid in question
-        IF (current -> bid.bidId EQUAL bidId){
-            // Return the bid
-            SET bid TO current -> bid
+        // find the course in question
+        IF (current -> course.id EQUAL courseId){
+            // Return the course
+            SET course TO current -> course
             BREAK
         SET current TO current -> next
-    RETURN bid
+    RETURN course
 
 FUNCTION printCourse(course):
 	PRINT course.id + "  "
-	PRINT course.name + "  "
-	FOR (int i; i < course.pre; i++):
+	PRINT course.title + "  "
+	FOR (int i; i < course.pre.SIZE; i++):
 		PRINT course.pre[i]
 
 vector<HashCourse> = courseList;
@@ -181,16 +185,26 @@ vector<Course>::iterator courses;
 vector<string> = courseHash
 
 FUNCTION menu:
-	EXECUTE processCSV
 	while choice != 9:
         PRINT "Menu:"
-        PRINT "  1. Find Course"
+        PRINT "  1. Load Courses"
+        PRINT "  2. Find Course"
         PRINT "  9. Exit"
         PRINT "Enter choice: "
         GET user input put in choice
 
       	SWITCH choice:
-      		case 1:
+            case 1:
+                START clock ticks
+                RUN FUNCTION processCSV(csvPath, &courseList);
+                PRINT courseList.Size() " courses read"
+                CHECK clock MINUS ticks
+                PRINT "time: " ticks " milliseconds" // prints time between miliseconds
+                PRINT "time: "  ticks * 1.0 / CLOCKS_PER_SEC " seconds" // to print time in seconds
+                // Clean the imported reqs list
+                RUN FUNCTION checkCourse()
+                break
+      		case 2:
       			PRINT "What course will we search?"
       			GET user input PUT into course
 	            course course = EXECUTE FUNCTION search(course)
