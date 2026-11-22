@@ -46,10 +46,10 @@ HashTable::~HashTable():
         // Set the key back to the unit max to mark as empty
         bucket.key = UINT_MAX
 
-HashTable::Insert(bid):
+HashTable::Insert(class):
     // create the key for the given bid
     // retrieve node using key
-    SET INT idx TO hash(stoi(bid.bidId))
+    SET INT idx TO hash(stoi(class.id))
     // Add or create a new node
     SET Node& bucket TO nodes[idx];
     // if no entry found for the key

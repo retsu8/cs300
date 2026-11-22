@@ -4,7 +4,7 @@ CS 300 Module: Project One Milestone One
 // Size is the same as the memory buffer
 INT DEFAULT_SIZE = 128
 
-STRUCT Class:
+STRUCT Course:
 	STRING title
 	STRING id
 	vectore<string> prereq
@@ -12,7 +12,7 @@ STRUCT Class:
 CLASS HashCourse:
 	private:
 		STRUCT Node:
-			Class class
+			Course course
 			INT key
 			NODE *next
 
@@ -20,10 +20,10 @@ CLASS HashCourse:
 				key = UINT_MAX
 				next = NULL
 			
-			Node(Class aClass) : Node():
-				class = aClass
+			Node(Course aCourse) : Node():
+				course = aCourse
 
-			Node(Class aClass, INT aKey) : Node(aClass):
+			Node(course acourse, INT aKey) : Node(acourse):
 				key = aKey
 		
 		vector<Node> nodes
@@ -34,10 +34,10 @@ CLASS HashCourse:
 		HashTable()
 		HashTable(INT size)
 		virtual ~HashTable()
-		VOID Insert(Class class)
+		VOID Insert(course course)
 		VOID PrintALL()
-		VOID Remove(STRING classId)
-		Class Search(STRING classId)
+		VOID Remove(STRING courseId)
+		course Search(STRING courseId)
 		size_t Size()
 
 HashTable::HashTable()
@@ -68,26 +68,26 @@ HashTable::~HashTable():
         // Set the key back to the unit max to mark as empty
         bucket.key = UINT_MAX
 
-HashTable::Insert(class):
-    // create the key for the given class id
+HashTable::Insert(course):
+    // create the key for the given course id
     // retrieve node using key
-    SET INT idx TO hash(stoi(class.id))
+    SET INT idx TO hash(stoi(course.id))
     // Add or create a new node
     SET Node& bucket TO nodes[idx];
     // if no entry found for the key
     // assign this node to the key position
     IF ( CHECK bucket.key TO UINT_MAX){
-        SET bucket.class TO class
+        SET bucket.course TO course
         SET bucket.key TO idx
         RETURN
     }
-    // running for loop while to append class if found
+    // running for loop while to append course if found
     SET Node* current TO &bucket
     WHILE(current-> next NOT EQUAL nullptr):
         SET current TO current -> next
 
     // Add a new node to the current bucket
-    SET current -> next TO Node(class, idx)
+    SET current -> next TO Node(course, idx)
 
 FUNCTION processCSV(csvList):
 	csv::Parser file = csv::Parser(csvPath); // read operations from stream
@@ -104,8 +104,8 @@ FUNCTION processCSV(csvList):
             // If there is no more than two, then we dont loop
             FOR (int j = 2; file[i].size; j++):
             	PUSH REQUIRED COURSE INTO course.pre from file[i][j]
-            APPEND course to classList
-            APPEND file[i][0] TO classHash
+            APPEND course to courseList
+            APPEND file[i][0] TO courseHash
 
     CATCH (csv::Error &e):
     	// Check to make sure we have atleast 2 params, or the file[i][0] will fail
@@ -145,13 +145,13 @@ void HashTable::Remove(string bidId):
         SETprevious TO current;
         SET current TO current->next
 
-FUNCTION checkClassCourse():
-	FOR (int c = 0; c < classList.size(); c++)
-		COURSE course = classList[c]
+FUNCTION checkcourseCourse():
+	FOR (int c = 0; c < courseList.size(); c++)
+		COURSE course = courseList[c]
 		POINTER prereq => couse.pre
 		BOOL found = FALSE
 		FOR (int i = 0; i < prereq.size(); i++):
-			INT itr = find(classHash.begin(), classHash.end(), prereq[i])
+			INT itr = find(courseHash.begin(), courseHash.end(), prereq[i])
 			IF(ITR == NULL):
 				course.pre.erase(course.pre.begin() + itr)
 
@@ -176,9 +176,9 @@ FUNCTION printCourse(course):
 	FOR (int i; i < course.pre; i++):
 		PRINT course.pre[i]
 
-vector<HashCourse> = classList;
+vector<HashCourse> = courseList;
 vector<Course>::iterator courses;
-vector<string> = classHash
+vector<string> = courseHash
 
 FUNCTION menu:
 	EXECUTE processCSV
@@ -192,9 +192,9 @@ FUNCTION menu:
       	SWITCH choice:
       		case 1:
       			PRINT "What course will we search?"
-      			GET user input PUT into class
-	            CLASS class = EXECUTE FUNCTION search(class)
-	            EXECUTE FUNCTION printCourse(class)
+      			GET user input PUT into course
+	            course course = EXECUTE FUNCTION search(course)
+	            EXECUTE FUNCTION printCourse(course)
 	            break
 	        default:
 	        	PRINT "Choice not reconized"
