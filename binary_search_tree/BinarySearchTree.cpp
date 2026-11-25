@@ -92,8 +92,7 @@ BinarySearchTree::BinarySearchTree() {
  */
 BinarySearchTree::~BinarySearchTree() {
     // recurse from root deleting every node
-    delete left;
-    delete right;
+    delete root;
 }
 
 /**
@@ -105,8 +104,7 @@ void BinarySearchTree::InOrder() {
     if (root == NULL){
         return;
     }
-    InOrder(root->left);
-    InOrder(root->right);
+    return inOrder(root);
 }
 
 /**
@@ -207,9 +205,9 @@ void BinarySearchTree::inOrder(Node* node) {
       //output bidID, title, amount, fund
       //InOder right
     if (node != nullptr) {
-        inorderTraversal(node->left);
+        inOrder(node->left);
         cout << node->bid.bidId << " " node->bid.title << " " << node->bid.amount << "" << node -> bid.fund << " ";
-        inorderTraversal(node->right);
+        inOrder(node->right);
     }
 }
 void BinarySearchTree::postOrder(Node* node) {
