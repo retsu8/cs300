@@ -84,24 +84,29 @@ public:
  * Default constructor
  */
 BinarySearchTree::BinarySearchTree() {
-    // FixMe (1): initialize housekeeping variables
-    //root is equal to nullptr
+    this->root = nullptr;
 }
 
 /**
  * Destructor
  */
 BinarySearchTree::~BinarySearchTree() {
-    //FixMe (2)
     // recurse from root deleting every node
+    delete left;
+    delete right;
 }
 
 /**
  * Traverse the tree in order
  */
 void BinarySearchTree::InOrder() {
-    // FixMe (3a): In order root
     // call inOrder fuction and pass root 
+    // If root is null return
+    if (root == NULL){
+        return;
+    }
+    InOrder(root->left);
+    InOrder(root->right);
 }
 
 /**
@@ -139,20 +144,40 @@ void BinarySearchTree::Insert(Bid bid) {
 void BinarySearchTree::Remove(string bidId) {
     // FIXME (7a) Implement removing a bid from the tree
     // remove node root bidID
+
+    if (root == nullptr)
+        return nullptr;
+    if (root->left == nullptr && root->right == nullptr) {
+        delete root;
+        return nullptr;
+    }
+
+    // Recursively delete in left and 
+    // right subtrees.
+    root->left = Remove(root->left);
+    root->right = Remove(root->right);
+
+    return root;
 }
 
 /**
  * Search for a bid
  */
 Bid BinarySearchTree::Search(string bidId) {
-    // FIXME (8) Implement searching the tree for a bid
     // set current node equal to root
+    Node* node = root;
+    if (node == nullptr || node->bid.bidId == bidId) {
+        return node;
+    }
 
-    // keep looping downwards until bottom reached or matching bidId found
-        // if match found, return current bid
+    // Key is greater than root's key
+    if (node->bid.bidId < bidId) {
+        return searchNode(node->right, bidId);
+    }
 
-        // if bid is smaller than current node then traverse left
-        // else larger so traverse right
+    // Key is smaller than root's key
+    return searchNode(node->left, bidId);
+}
     Bid bid;
     return bid;
 }
@@ -181,6 +206,11 @@ void BinarySearchTree::inOrder(Node* node) {
       //InOrder not left
       //output bidID, title, amount, fund
       //InOder right
+    if (node != nullptr) {
+        inorderTraversal(node->left);
+        cout << node->bid.bidId << " " node->bid.title << " " << node->bid.amount << "" << node -> bid.fund << " ";
+        inorderTraversal(node->right);
+    }
 }
 void BinarySearchTree::postOrder(Node* node) {
       // FixMe (4b): Pre order root
