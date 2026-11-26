@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include <time.h>
+#include <algorithm> 
 
 #include "CSVparser.hpp"
 
@@ -363,11 +364,11 @@ void loadBids(string csvPath, BinarySearchTree* bst) {
  * @param ch The character to strip out
  */
 double strToDouble(string str, char ch) {
-    str.erase(std::remove(str.begin(), str.end(), ch), str.end());
+    str.erase(remove(str.begin(), str.end(), ch), str.end());
     return atof(str.c_str());
 }
 
-/**
+/**remove
  * The one and only main() method
  */
 int main(int argc, char* argv[]) {
