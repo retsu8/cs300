@@ -258,10 +258,10 @@ void BinarySearchTree::preOrder(Node* node) {
 Node* BinarySearchTree::removeNode(Node* root, string bidId) {
     if (!root) return nullptr;
 
-    if (bidId < root->bidId) {
+    if (bidId < root->bid.bidId) {
         // Check the left root node and see if it matches
         root->left = removeNode(root->left, bidId);
-    } else if (key > root->key) {
+    } else if (bidId > root->bid.bidId) {
         // Check the right root node and see if it matches
         root->right = removeNode(root->right, bidId);
     } else {
@@ -279,14 +279,14 @@ Node* BinarySearchTree::removeNode(Node* root, string bidId) {
             return replacement;
         }
 
-        // Two children: copy the in-order successor's key
+        // Two children: copy the in-order successor's bidid
         Node* successor = root->right;
         while (successor->left) {
             successor = successor->left;
         }
 
-        root->key = successor->key;
-        root->right = removeNode(root->right, successor->key);
+        root->bid = successor->bid;
+        root->right = removeNode(root->right, successor->bid.bidId);
     }
 
     return root;
