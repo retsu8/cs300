@@ -138,11 +138,12 @@ void BinarySearchTree::PreOrder() {
  * Insert a bid
  */
 void BinarySearchTree::Insert(Bid bid) {
-    // FIXME (6a) Implement inserting a bid into the tree
-    // if root equarl to null ptr
-      // root is equal to new node bid
-    // else
-      // add Node root and bid
+    // Set up the root node and then add in the bid where it needs to go if not root
+    if (root == nullptr) {
+        root = new Node(bid);
+    } else {
+        addNode(root, bid);
+    }
 }
 
 /**
@@ -201,16 +202,20 @@ Bid BinarySearchTree::Search(string bidId) {
  * @param bid Bid to be added
  */
 void BinarySearchTree::addNode(Node* node, Bid bid) {
-    // FIXME (6b) Implement inserting a bid into the tree
-    // if node is larger then add to left
-        // if no left node
-            // this node becomes left
-        // else recurse down the left node
-    // else
-        // if no right node
-            // this node becomes right
-        //else
-            // recurse down the left node
+    // Adding in null checks and left node creation for bid
+    if (bid.bidId > node->bid.bidId) {
+        if (node->right == nullptr) {
+            node->right = new Node(bid);
+        } else {
+            addNode(node->right, bid);
+        }
+    } else {
+        if (node->left == nullptr) {
+            node->left = new Node(bid);
+        } else {
+            addNode(node->left, bid);
+        }
+    }
 }
 void BinarySearchTree::inOrder(Node* node) {
     // Brind out the node inOrder from that node
