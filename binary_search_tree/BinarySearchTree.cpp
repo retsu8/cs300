@@ -106,7 +106,7 @@ void BinarySearchTree::InOrder() {
     if (root == NULL){
         return;
     }
-    return inOrder(root);
+    inOrder(root);
 }
 
 /**
@@ -175,25 +175,34 @@ void BinarySearchTree::Remove(string bidId) {
 * Search the binarry tree via recursion
 **/
 Node* BinarySearchTree::searchNode(Node* node, string bidId){
-    if (node == nullptr || node->bid.bidId == bidId) {
+    // Check if the node is null and return it
+    if (node == nullptr) {
+        return nullptr;  // Reached an empty spot; the ID wasn't found
+    }
+    if (node->bid.bidId == bidId) {
             return node;
     }
 
     // Key is greater than root's key
-    if (node->bid.bidId < bidId) {
-        return searchNode(node->right, bidId);
-    } else{
-        // Key is smaller than root's key
+    if (bidId < node->bid.bidId) {
         return searchNode(node->left, bidId);
+    } else {
+        return searchNode(node->right, bidId);
     }
 }
 /**
  * Search for a bid
  */
 Bid BinarySearchTree::Search(string bidId) {
-    // set current node equal to root
-    Node* node = searchNode(node, bidId);
-    return node -> bid;
+    // Set the root node
+    Node* node = searchNode(root, bidId);
+
+    // the node does not exist return null
+    if (node == nullptr) {
+        return Bid{};  // Return an empty Bid if not found
+    }
+
+    return node->bid;
 }
 
 /**
@@ -222,7 +231,10 @@ void BinarySearchTree::inOrder(Node* node) {
     // Brind out the node inOrder from that node
     if (node != nullptr) {
         inOrder(node->left);
-        cout << node->bid.bidId << " " << node->bid.title << " " << node->bid.amount << "" << node -> bid.fund << " ";
+        cout << node->bid.bidId << ": "
+             << node->bid.title << " | "
+             << node->bid.amount << " | "
+             << node->bid.fund << endl;
         inOrder(node->right);
     }
 }
