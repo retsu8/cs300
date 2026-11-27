@@ -1,0 +1,435 @@
+//============================================================================
+// Name        : BinarySearchTree.cpp
+// Author      : William Paddock
+// Version     : 1.0
+// Copyright   : Copyright � 2023 SNHU COCE
+// Description : Lab 5-2 Binary Search Tree Pseudocode
+//============================================================================
+
+USING namespace std;
+
+//============================================================================
+// Global definitions visible to all methods and classes
+//============================================================================
+
+// forward declarations
+DOUBLE strToDOUBLE(STRING str, char ch)
+
+// define a structure to hold bid information
+STRUCTURE Bid
+    bidId: STRING  // unique identifier
+    title: STRING
+    fund: STRING
+    amount: DOUBLE
+
+    CONSTRUCTOR Bid()
+        SET amount TO 0.0
+    END CONSTRUCTOR
+END STRUCTURE
+
+// Internal structure for tree node
+STRUCTURE Node
+    bid: Bid
+    left: Node
+    right: Node
+
+    CONSTRUCTOR Node()
+        SET left TO null
+        SET right TO null
+    END CONSTRUCTOR
+
+    CONSTRUCTOR Node(aBid: Bid)
+        CALL Node()
+        SET bid TO aBid
+    END CONSTRUCTOR
+END STRUCTURE
+
+//============================================================================
+// Binary Search Tree class definition
+//============================================================================
+
+/**
+ * Define a class containing data members and methods to
+ * implement a binary search tree
+ */
+CLASS BinarySearchTree
+    PRIVATE
+        root: Node
+
+        PROCEDURE addNode(node: Node, bid: Bid)
+        PROCEDURE inOrder(node: Node)
+        PROCEDURE postOrder(node: Node)
+        PROCEDURE preOrder(node: Node)
+        FUNCTION removeNode(node: Node, bidId: STRING) RETURNS Node
+        FUNCTION searchNode(node: Node, bidId: STRING) RETURNS Node
+
+    PUBLIC
+        CONSTRUCTOR BinarySearchTree()
+        DESTRUCTOR BinarySearchTree()
+
+        PROCEDURE InOrder()
+        PROCEDURE PostOrder()
+        PROCEDURE PreOrder()
+        PROCEDURE Insert(bid: Bid)
+        PROCEDURE Remove(bidId: STRING)
+        FUNCTION Search(bidId: STRING) RETURNS Bid
+END CLASS
+
+/**
+ * Default constructor
+ */
+CONSTRUCT BinarySearchTree::BinarySearchTree()
+    DECLARE this->root AS nullptr
+END CONSTRUCT
+
+/**
+ * Destructor
+ */
+DESTRUCT BinarySearchTree.~BinarySearchTree():
+    // recurse from root deleting every node
+    DELETE root
+END DESTRUCT
+
+/**
+ * Traverse the tree in order
+ */
+PROCEDURE BinarySearchTree.InOrder():
+    // call inOrder fuction and pass root 
+    // If root is null return
+    if root IS NULL:
+        RETURN
+    CALL inOrder(root)
+END PROCEDURE
+
+/**
+ * Traverse the tree in post-order
+ */
+PROCEDURE BinarySearchTree.PostOrder():
+    // call postOrder fuction and pass root 
+    // If root is null return
+    IF root IS NULL:
+        RETURN
+    END IF
+    CALL postOrder(root)
+END PROCEDURE
+
+/**
+ * Traverse the tree in pre-order
+ */
+PROCEDURE BinarySearchTree.PreOrder()
+    // call preOrder fuction and pass root 
+    // If root is null return
+    IF root IS NULL:
+        RETURN
+    END IF
+    CALL preOrder(root)
+END PROCEDURE
+
+/**
+ * Insert a bid
+ */
+PROCEDURE BinarySearchTree.Insert(Bid bid):
+    // Set up the root node and then add in the bid where it needs to go if not root
+    IF root IS nullptr:
+        DECLARE root AS A NEW Node(bid)
+    ELSE:
+        CALL addNode(root, bid)
+    END IF
+END PROCEDURE
+
+/**
+ * Remove a bid
+ */
+PROCEDURE BinarySearchTree.Remove(STRING bidId):
+    // remove node root bidId
+    DECLARE Node* node AS root
+    IF root IS NULL:
+        RETURN
+    END IF
+    IF node->bid.bidId IS EQUAL bidId:
+        DELETE node
+        RETURN
+    END IF
+    // Recursively delete in left and 
+    // right subtrees.
+    IF bidId GREATER THAN node->bid.bidId:
+        // Search right subtree for bid and remove
+        SET node CALL removeNode(node->right, bidId)        
+    ELSE:
+        // Search left subtree for bid and remove
+        SET node CALL removeNode(node->left, bidId)
+    END IF
+END PROCEDURE
+
+
+/**
+* Search the binarry tree via recursion
+**/
+PROCEDURE BinarySearchTree.searchNode(node: Node, bidId: STRING) RETURNS Node
+    IF node IS null
+        RETURN null
+    END IF
+
+    IF node.bid.bidId EQUALS bidId
+        RETURN node
+    END IF
+
+    IF bidId IS LESS THAN node.bid.bidId
+        RETURN searchNode(node.left, bidId)
+    ELSE
+        RETURN searchNode(node.right, bidId)
+    END IF
+END PROCUDURE
+
+/**
+ * Search for a bid
+ */
+PROCEDURE BinarySearchTree.Search(bidId: STRING) RETURNS Bid
+    SET node CALL searchNode(root, bidId)
+
+    IF node IS null
+        RETURN an empty Bid
+    END IF
+
+    RETURN node.bid
+END PROCEDURE
+
+/**
+ * Add a bid to some node (recursive)
+ *
+ * @param node Current node in tree
+ * @param bid Bid to be added
+ */
+PROCEDURE BinarySearchTree.addNode(node: Node, bid: Bid)
+    IF bid.bidId IS GREATER THAN node.bid.bidId
+        IF node.right IS null
+            DECLARE node.right IS A NEW Node containing bid
+        ELSE
+            CALL addNode(node.right, bid)
+        END IF
+    ELSE
+        IF node.left IS null
+            DECLARE node.left IS A NEW Node containing bid
+        ELSE
+            CALL addNode(node.left, bid)
+        END IF
+    END IF
+END PROCEDURE
+
+PROCEDURE BinarySearchTree.inOrder(node: Node)
+    IF node IS NOT null
+        CALL inOrder(node.left)
+        CALL displayBid(node.bid)
+        CALL inOrder(node.right)
+    END IF
+END PROCEDURE
+
+PROCEDURE BinarySearchTree.postOrder(Node* node):
+    // Do not print empty node, return empty
+    IF node EQUAL nullptr
+        RETURN  // Nothing to visit
+    END IF
+
+    CALL postOrder(node->left);   // Visit left subtree
+    CALL postOrder(node->right);  // Visit right subtree
+
+    // Visit/print this node last
+    OUTPUT "node.bid.bid_id: node.bid.title | node.bid.amount | node.bid.fund"
+END PROCEDURE
+
+
+PROCEDURE BinarySearchTree.preOrder(Node* node):
+    // Do not print empty node, return empty
+    IF node EQUAL nullptr
+        RETURN   // Stop at an empty child
+    END IF
+
+    // Visit the current node first
+    OUTPUT "node.bid.bid_id: node.bid.title | node.bid.amount | node.bid.fund"
+
+    CALL preOrder(node->left);   // Then visit the left subtree
+    CALL preOrder(node->right);  // Then visit the right subtree
+END PROCEDURE
+    
+
+/**
+ * Remove a bid from some node (recursive)
+ */
+
+PROCEDURE BinarySearchTree.removeNode(root: Node, bidId: STRING)
+    IF root IS null
+        RETURN
+    END IF
+
+    IF bidId IS GREATER THAN root.bid.bidId
+        CALL removeNode(root.right, bidId)
+    ELSE IF bidId IS LESS THAN root.bid.bidId
+        CALL removeNode(root.left, bidId)
+    ELSE
+        // Node has no left child
+        IF root.left IS null
+            DECLARE root EQUAL root.right
+            RETURN
+        END IF
+
+        // Node has no right child
+        IF root.right IS null
+            DECLARE root EQUAL root.left
+            RETURN
+        END IF
+
+        // Node has two children: find its in-order successor
+        DECLARE successor EQUAL root.right
+        WHILE successor.left IS NOT null
+            DECLARE successor EQUAL successor.left
+        END WHILE
+
+        DECLARE root.bid EQUAL successor.bid
+        CALL removeNode(root.right, successor.bid.bidId)
+    END IF
+END PROCEDURE
+
+
+//============================================================================
+// Static methods used for testing
+//============================================================================
+
+/**
+ * Display the bid information to the console (std::out)
+ *
+ * @param bid struct containing the bid info
+ */
+FUNCTION displayBid(bid)
+    OUTPUT bid.bidId + ": " + bid.title + " | " + bid.amount + " | " + bid.fund
+END FUNCTION
+
+/**
+ * Load a CSV file containing bids into a container
+ *
+ * @param csvPath the path to the CSV file to load
+ * @return a container holding all the bids read
+ */
+FUNCTION loadBids(csvPath: STRING, bst: BinarySearchTree)
+    OUTPUT "Loading CSV file " + csvPath
+
+    // initialize the CSV Parser using the given path
+    DECLARE file EQUAL a CSV Parser created from csvPath
+
+    // read and display header row - optional
+    DECLARE header EQUAL file.getHeader()
+    FOR EACH column IN header
+        OUTPUT column + " | " WITHOUT NEW LINE
+    END FOR
+
+    TRY
+        // loop to read rows of a CSV file
+        FOR i FROM 0 TO file.rowCount() - 1
+            // Create a data structure and add to the collection of bids
+            CREATE bid AS A NEW Bid
+            DECLARE bid.bidId EQUAL file[i][1]
+            DECLARE bid.title EQUAL file[i][0]
+            DECLARE bid.fund EQUAL file[i][8]
+            DECLARE bid.amount  EQUAL TO convert file[i][4] to a number, removing '$'
+
+            // OUTPUT "Item: " + bid.title + ", Fund: " + bid.fund + ", Amount: " + bid.amount
+
+            // push this bid to the end
+            CALL bst.Insert(bid)
+        END FOR
+    CATCH CSV Error AS e
+        OUTPUT e.message TO ERROR OUTPUT
+    END TRY
+END FUNCTION
+
+/**
+ * Simple C function to convert a STRING to a DOUBLE
+ * after stripping out unwanted char
+ *
+ * credit: http://stackoverflow.com/a/24875936
+ *
+ * @param ch The character to strip out
+ */
+FUNCTION strToDOUBLE(str: STRING, ch: CHARACTER) RETURNS DOUBLE
+    REMOVE every occurrence of ch from str
+    RETURN convert str to a floating-point number
+END FUNCTION
+
+/**remove
+ * The one and only main() method
+ */
+PROCEDURE main(commandLineArguments)
+    // process command line arguments
+    IF number of commandLineArguments IS 2
+        SET csvPath TO commandLineArguments[1]
+        SET bidKey TO "98223"
+    ELSE IF number of commandLineArguments IS 3
+        SET csvPath TO commandLineArguments[1]
+        SET bidKey TO commandLineArguments[2]
+    ELSE
+        SET csvPath TO "eBid_Monthly_Sales.csv"
+        SET bidKey TO "98223"
+    END IF
+
+    // Define a timer variable
+    DECLARE ticks
+
+    // Define a binary search tree to hold all bids
+    CREATE bst AS A NEW BinarySearchTree
+    CREATE bid AS A NEW Bid
+
+    SET choice TO 0
+
+    WHILE choice IS NOT 9
+        OUTPUT "Menu:"
+        OUTPUT "  1. Load Bids"
+        OUTPUT "  2. Display All Bids"
+        OUTPUT "  3. Find Bid"
+        OUTPUT "  4. Remove Bid"
+        OUTPUT "  9. Exit"
+        OUTPUT "Enter choice: "
+        INPUT choice
+
+        SWITCH choice
+            CASE 1
+                // Initialize a timer variable before loading bids
+                SET ticks TO current clock value
+
+                // Complete the method call to load the bids
+                CALL loadBids(csvPath, bst)
+
+                // OUTPUT the number of bids read
+
+                // Calculate elapsed time and display result
+                SET ticks TO current clock value MINUS ticks
+                OUTPUT "time: " + ticks + " clock ticks"
+                OUTPUT "time: " + (ticks / clocks per second) + " seconds"
+                BREAK
+
+            CASE 2
+                CALL bst.InOrder()
+                BREAK
+
+            CASE 3
+                SET ticks TO current clock value
+                SET bid TO bst.Search(bidKey)
+                SET ticks TO current clock value MINUS ticks
+
+                IF bid.bidId IS NOT empty
+                    CALL displayBid(bid)
+                ELSE
+                    OUTPUT "Bid Id " + bidKey + " not found."
+                END IF
+
+                OUTPUT "time: " + ticks + " clock ticks"
+                OUTPUT "time: " + (ticks / clocks per second) + " seconds"
+                BREAK
+
+            CASE 4
+                CALL bst.Remove(bidKey)
+                BREAK
+        END SWITCH
+    END WHILE
+
+    OUTPUT "Good bye."
+END PROCEDURE
+

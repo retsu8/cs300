@@ -1,6 +1,6 @@
 //============================================================================
 // Name        : BinarySearchTree.cpp
-// Author      : Your name
+// Author      : William Paddock 
 // Version     : 1.0
 // Copyright   : Copyright � 2023 SNHU COCE
 // Description : Lab 5-2 Binary Search Tree
